@@ -1,5 +1,4 @@
-
-
+const app = require("./app");
 const dotenv = require("dotenv");
 
 
@@ -9,7 +8,6 @@ dotenv.config();
 
 let port = parseInt(process.env.PORT);
 
-const app = require("./app");
 
 
 
