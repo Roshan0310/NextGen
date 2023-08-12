@@ -5,7 +5,6 @@ const ApiFeatures = require("../utils/apiFeatures");
 
 //Create Product --Admin
 exports.createProduct = catchAsyncErrors(async (req, res, next) => {
-
   req.body.user = req.user.id;
 
   const product = await Product.create(req.body);
@@ -18,9 +17,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 
 //Get all Product
 exports.getAllProducts = catchAsyncErrors(async (req, res) => {
-
   const resultPerPage = 5;
-  const productCount  =await Product.countDocuments();
+  const productCount = await Product.countDocuments();
 
   const apiFeature = new ApiFeatures(Product.find(), req.query)
     .search()
@@ -89,49 +87,47 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
 // Create new review or update the review
 
 exports.createProductReview = catchAsyncErrors(async (req, res, next) => {
-
-  const {rating,comment,productId} = req.body
+  const { rating, comment, productId } = req.body;
   const review = {
-    user :req.user._id,
+    user: req.user._id,
     name: req.user.name,
-    rating:Number(rating),
-    comment
-  }
+    rating: Number(rating),
+    comment,
+  };
 
   const product = await Product.findById(productId);
 
-  const isReviewed = product.reviews.find(rev=>rev.user.toString()===req.user._id)
+  const isReviewed = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id
+  );
 
-  if(isReviewed){
-    product.reviews.forEach(rev=>{
-      if(rev.user.toString()===req.user._id.toString())
-      (rev.rating=rating),(rev.comment = comment);
-    })
-  }
-  else{
+  if (isReviewed) {
+    product.reviews.forEach((rev) => {
+      if (rev.user.toString() === req.user._id.toString())
+        (rev.rating = rating), (rev.comment = comment);
+    });
+  } else {
     product.reviews.push(review);
-    product.numOfReviews = product.reviews.length
+    product.numOfReviews = product.reviews.length;
   }
-
 
   let avg = 0;
-  product.ratings = product.reviews.forEach(rev=>{
-    avg+=rev.rating
-  })
+  product.ratings = product.reviews.forEach((rev) => {
+    avg += rev.rating;
+  });
 
-  product.ratings = avg/product.reviews.length;
+  product.ratings = avg / product.reviews.length;
 
-  await product.save({validateBeforeSave:false});
+  await product.save({ validateBeforeSave: false });
 
   res.status(200).json({
-    success:true
-  })
-
-})
+    success: true,
+  });
+});
 
 //Get all reviews of a product
 
-exports.getProductReviews = catchAsyncErrors(async(req,res,next)=>{
+exports.getProductReviews = catchAsyncErrors(async (req, res, next) => {
   const product = await Product.findById(req.query.id);
 
   if (!product) {
@@ -139,14 +135,14 @@ exports.getProductReviews = catchAsyncErrors(async(req,res,next)=>{
   }
 
   res.status(200).json({
-    success:true,
-    reviews: product.reviews
-  })
-})
+    success: true,
+    reviews: product.reviews,
+  });
+});
 
 //Delete Reviews
 
-exports.deleteReview = catchAsyncErrors(async (req,res,next)=>{
+exports.deleteReview = catchAsyncErrors(async (req, res, next) => {
   const product = await Product.findById(req.query.productId);
 
   if (!product) {
@@ -154,29 +150,33 @@ exports.deleteReview = catchAsyncErrors(async (req,res,next)=>{
   }
 
   const reviews = product.reviews.filter(
-    (rev)=>rev._id.toString() !== req.query.id.toString()
-    );
+    (rev) => rev._id.toString() !== req.query.id.toString()
+  );
 
-    let avg = 0;
-    reviews.forEach(rev=>{
-      avg+=rev.rating
-    })
-  
-    const ratings = avg/reviews.length;
+  let avg = 0;
+  reviews.forEach((rev) => {
+    avg += rev.rating;
+  });
 
-    const numOfReviews  = reviews.length;
+  const ratings = avg / reviews.length;
 
-    await Product.findByIdAndUpdate(req.query.productId,{
-      reviews,ratings,numOfReviews
-    },{
-      new:true,
-      runValidators:true,
-      useFindAndModify:false
-    });
+  const numOfReviews = reviews.length;
 
-
+  await Product.findByIdAndUpdate(
+    req.query.productId,
+    {
+      reviews,
+      ratings,
+      numOfReviews,
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
 
   res.status(200).json({
-    success:true,
-  })
-})
+    success: true,
+  });
+});

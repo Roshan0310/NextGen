@@ -81,7 +81,6 @@ exports.getAllOrders = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
 // update Order Status -- Admin
 exports.updateOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
@@ -118,14 +117,6 @@ async function updateStock(id, quantity) {
 
   await product.save({ validateBeforeSave: false });
 }
-
-
-
-
-
-
-
-
 
 //Delete Order -- Admin
 
