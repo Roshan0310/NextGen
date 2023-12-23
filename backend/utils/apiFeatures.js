@@ -9,7 +9,7 @@ class ApiFeatures {
       ? {
           name: {
             $regex: this.queryStr.keyword,
-            $options: "i",
+            $options: 'i',
           },
         }
       : {};
@@ -22,7 +22,7 @@ class ApiFeatures {
     const queryCopy = { ...this.queryStr };
 
     //Romoving some fields for category
-    const removeFields = ["keyword", "page", "limit"];
+    const removeFields = ['keyword', 'page', 'limit'];
 
     removeFields.forEach((key) => delete queryCopy[key]);
 
@@ -45,4 +45,4 @@ class ApiFeatures {
   }
 }
 
-module.exports = ApiFeatures;
+export default ApiFeatures;

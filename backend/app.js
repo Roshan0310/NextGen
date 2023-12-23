@@ -1,22 +1,23 @@
-const express = require("express");
+import express, { json, urlencoded } from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import logger from 'morgan';
+
 const app = express();
-const cookieParser = require("cookie-parser");
 
-const errorMiddleware = require("./middleWare/error");
+import errorMiddleware from './middleWare/error.js';
 
-app.use(express.json());
+import router from './routes/index.js';
+
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
+app.use(logger('dev'));
 
-//Route Import
-const product = require("./routes/productRoute");
-const user = require("./routes/userRoute");
-const order = require("./routes/orderRoute");
-
-app.use("/api/v1", product);
-app.use("/api/v1", user);
-app.use("/api/v1", order);
+app.use('/api/', router);
 
 //Middleware for error
 app.use(errorMiddleware);
 
-module.exports = app;
+export default app;

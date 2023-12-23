@@ -1,11 +1,11 @@
-const ErrorHandler = require("../utils/errorHandler");
+import ErrorHandler from '../utils/errorHandler.js';
 
-module.exports = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
-  err.message = err.message || "Internal Server Error";
+  err.message = err.message || 'Internal Server Error';
 
   //Wrong Mongodb id Error
-  if ((err.name = "CastError")) {
+  if ((err.name = 'CastError')) {
     const message = `Resource not found. Invalid: ${err.path}`;
     err = new ErrorHandler(message, 400);
   }
@@ -17,13 +17,13 @@ module.exports = (err, req, res, next) => {
   }
 
   //JWT Token Error
-  if (err.name === "JsonWebTokenError") {
+  if (err.name === 'JsonWebTokenError') {
     const message = `Json web Token is Invalid, try agin`;
     err = new ErrorHandler(message, 400);
   }
 
   //JWT expire Error
-  if (err.name === "TokenExpiredError") {
+  if (err.name === 'TokenExpiredError') {
     const message = `Json web Token is Expired, try agin`;
     err = new ErrorHandler(message, 400);
   }
@@ -33,3 +33,5 @@ module.exports = (err, req, res, next) => {
     message: err.message,
   });
 };
+
+export default errorMiddleware;

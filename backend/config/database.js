@@ -1,15 +1,13 @@
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
+import mongoose from 'mongoose';
+mongoose.set('strictQuery', false);
 
-const connectDatabase = () => {
-  mongoose
-    .connect(process.env.DB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((data) => {
-      console.log(`Mogodb connected with the server: ${data.connection.host}`);
-    });
+export const connectDatabase = async () => {
+  try {
+    const connection = await mongoose.connect(process.env.DB_URI);
+    console.log(
+      `Mogodb connected with the server: ${connection.connection.host}`
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
-
-module.exports = connectDatabase;
