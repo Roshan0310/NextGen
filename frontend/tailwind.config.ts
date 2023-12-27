@@ -5,6 +5,8 @@ export default {
     extend: {
       colors: {
         'theme-color': '#19A5A5',
+        white: '#ffffff',
+        black: '#000000',
       },
     },
   },
